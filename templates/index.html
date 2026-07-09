@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Driver Monitor</title>
+    <style>
+        body { background-color: #1e1e2f; color: white; font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .dashboard { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; }
+        .card { background-color: #2a2a40; padding: 15px 25px; border-radius: 10px; font-size: 18px; font-weight: bold; min-width: 150px; }
+        #status-card { color: #00ff00; }
+        .video-container { border: 4px solid #4caf50; border-radius: 10px; display: inline-block; overflow: hidden; position: relative; }
+        img { display: block; width: 640px; height: 480px; }
+        video, canvas { display: none; }
+        #music-alert { display: none; background-color: #ff9800; color: black; font-weight: bold; padding: 10px; border-radius: 5px; margin-top: 15px; }
+        #stop-music-btn {
+            display: none; 
+            padding: 10px 20px; 
+            font-size: 16px; 
+            font-weight: bold;
+            margin: 15px auto; 
+            cursor: pointer; 
+            background-color: #f44336; 
+            color: white; 
+            border: none; 
+            border-radius: 5px;
+        }
+        #stop-music-btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Smart Driver Monitoring System</h1>
+    
+    <div class="dashboard">
+        <div class="card">Status: <span id="status-card">NORMAL</span></div>
+        <div class="card">Eyes Closed: <span id="frames-card">0</span> frames</div>
+        <div class="card">Sleep Time: <span id="sleep-time-card" style="color: #ff4500;">0.0</span> s</div>
+        <div class="card">Yawning: <span id="yawn-card">No</span></div>
+        <div class="card">Distance: <span id="distance-card" style="color: #00ffff;">--</span> cm</div>
+    </div>
+
+    <div id="music-alert">Danger Detected! AI Mitigation Active (Playing Music)</div>
+    
+    <button id="stop-music-btn" disabled>Stop Music (Wait 60s)</button>
+
+    <button id="start-btn" style="padding: 10px 20px; font-size: 16px; margin: 20px 0; cursor: pointer; background-color: #4caf50; color: white; border: none; border-radius: 5px;">
+        Start System & Enable Alarm
+    </button>
+    <br>
+
+    <div class="video-container">
+        <img id="processedImage" src="" alt="Press Start and allow camera connection...">
+    </div>
+
+    <video id="videoElement" autoplay playsinline></video>
+    <canvas id="hiddenCanvas" width="640" height="480"></canvas>
+
+    <script>
+        const video = document.getElementById('videoElement');
+        const canvas = document.getElementById('hiddenCanvas');
+        const ctx = canvas.getContext('2d');
+        const processedImage = document.getElementById('processedImage');
+        const startBtn = document.getElementById('start-btn');
+        const stopMusicBtn = document.getElementById('stop-music-btn'); 
+        
+        const statusCard = document.getElementById('status-card');
+        const framesCard = document.getElementById('frames-card');
+        const sleepTimeCard = document.getElementById('sleep-time-card');
+        const distanceCard = document.getElementById('distance-card');
+        const yawnCard = document.getElementById('yawn-card');
+        const musicAlert = document.getElementById('music-alert');
+
+        let ws;
+        let isSystemRunning = false;
+        let audioCtx;
+        let lastBeepTime = 0;
+        let musicTimerInterval; 
+
+        const musicPlayer = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
+        musicPlayer.loop = true; 
+        let isMusicPlaying = false;
+
+        function playAlarm() {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            if (now - lastBeepTime < 0.6) return; 
+            
+            lastBeepTime = now;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'square'; 
+            oscillator.frequency.setValueAtTime(1000, now); 
+            
+            gainNode.gain.setValueAtTime(0.5, now);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start(now);
+            oscillator.stop(now + 0.5); 
+        }
+
+        function sendFrame() {
+            if (!isSystemRunning) return;
+            
+            if (video.readyState === video.HAVE_ENOUGH_DATA && ws.readyState === WebSocket.OPEN) {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const frameData = canvas.toDataURL('image/jpeg', 0.6);
+                ws.send(frameData);
+            } else {
+                requestAnimationFrame(sendFrame);
+            }
+        }
+
+        stopMusicBtn.addEventListener('click', () => {
+            musicPlayer.pause();
+            musicPlayer.currentTime = 0; 
+            isMusicPlaying = false;
+            
+            musicAlert.style.display = "none";
+            stopMusicBtn.style.display = "none";
+            
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send("RESET");
+            }
+        });
+
+        startBtn.addEventListener('click', () => {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            musicPlayer.load();
+            startBtn.style.display = 'none'; 
+            isSystemRunning = true;
+
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => { 
+                    video.srcObject = stream; 
+                    
+                    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                    ws = new WebSocket(protocol + "//" + window.location.host + "/ws");
+                    
+                    ws.onopen = () => {
+                        console.log("Connected to server");
+                        sendFrame(); 
+                    };
+
+                    ws.onmessage = (event) => {
+                        const data = JSON.parse(event.data);
+                        
+                        processedImage.src = data.image;
+                        framesCard.innerText = data.closed_frames;
+                        sleepTimeCard.innerText = data.sleep_seconds; 
+                        distanceCard.innerText = data.distance;
+                        yawnCard.innerText = data.yawning;
+
+                        if (data.trigger_music && !isMusicPlaying) {
+                            musicPlayer.play();
+                            isMusicPlaying = true;
+                            musicAlert.style.display = "block"; 
+                            
+                            stopMusicBtn.style.display = "block";
+                            stopMusicBtn.disabled = true;
+                            
+                            let timeLeft = 60; 
+                            stopMusicBtn.innerText = `Stop Music (Wait ${timeLeft}s)`;
+                            
+                            musicTimerInterval = setInterval(() => {
+                                timeLeft--;
+                                if (timeLeft > 0) {
+                                    stopMusicBtn.innerText = `Stop Music (Wait ${timeLeft}s)`;
+                                } else {
+                                    clearInterval(musicTimerInterval);
+                                    stopMusicBtn.innerText = "Stop Music Now";
+                                    stopMusicBtn.disabled = false;
+                                }
+                            }, 1000);
+                        }
+
+                        if (data.status === "DROWSY") {
+                            statusCard.innerText = "DROWSY ALERT!";
+                            statusCard.style.color = "red";
+                            playAlarm(); 
+                        } else if (data.status === "YAWN") {
+                            statusCard.innerText = "YAWNING";
+                            statusCard.style.color = "orange";
+                        } else {
+                            statusCard.innerText = "NORMAL";
+                            statusCard.style.color = "#00ff00";
+                        }
+
+                        requestAnimationFrame(sendFrame);
+                    };
+                })
+                .catch(err => { console.error("Error accessing camera: ", err); });
+        });
+    </script>
+</body>
+</html>
