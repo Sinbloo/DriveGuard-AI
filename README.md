@@ -50,72 +50,46 @@ DriveGuard_Project/
 └── ui2.2.bat                   # Batch execution script for Windows
 
 
-🚀 How to Run
+## ️ Project Architecture
+1. **Computer Vision Layer:** MediaPipe Face Mesh & OpenCV.
+2. **Deep Learning Layer:** PyTorch (MobileNetV2 Transfer Learning).
+3. **Backend & Streaming:** FastAPI & WebSockets.
+4. **Desktop GUI:** CustomTkinter.
+---
 
-1. Environment Setup
+## 🚀 How to Run
+### 1. Environment Setup
 
 Clone the repository and install the required dependencies:
-
-git clone https://github.com/YourUsername/DriveGuard-AI.git
+```bash
+git clone https://github.com/yourusername/DriveGuard-AI.git
 cd DriveGuard-AI
 pip install -r requirements.txt
-
-
-2. Running the Local Desktop App (Driver View)
-
-To launch the CustomTkinter dark-mode dashboard with local camera access:
-
-# On Windows, you can double-click ui2.2.bat, or run:
+```
+### 2. Audio Assets for AI Mitigation (Important ⚠️)
+The AI Mitigation system requires external audio files (e.g., wakefulness tracks, Quran) to trigger
+during emergencies.
+- Download the required audio assets from **[](https://drive.google.com/drive/folders/1QSAVcn-BSBvrmMoBSnGCsg_Tfz8j85KH?usp=sharing)]**.
+- Extract the downloaded files and place them inside the `assets/audio/` folder before running the
+application.
+### 3. Running the Local Desktop App (Driver View)
+Run the batch file or execute the Python script to launch the local monitoring interface:
+```bash
 python ui2.py
-
-
-3. Running the Web Application (Fleet Manager View)
-
-To start the FastAPI WebSocket server for live remote monitoring:
-
+```
+*(Or double-click `ui2.2.bat` on Windows)*
+### 4. Running the Web Server (Fleet Manager View)
+Start the FastAPI server for the live dashboard:
+```bash
 uvicorn server:app --host 0.0.0.0 --port 8000
-
-
-Open a web browser and navigate to http://localhost:8000.
-
-4. Cloud Deployment (Docker / Hugging Face Spaces)
-
-The project is containerized and ready for cloud deployment. To build and run using Docker:
-
-docker build -t driveguard-ai .
-docker run -p 7860:7860 driveguard-ai
-
-
-👥 Meet The Team (DEPI Project)
-
--Nour Gomaa
-
-Team Lead & AI Architect
-
-Designed system architecture, data strategy, reviewed models, managed GitHub, and executed final integration.
-
--Fatma Hesham
-
-Data & Dataset Engineer
-
-Handled dataset organization, cleaning, class balancing, augmentation, and PyTorch DataLoader pipelines.
-
--Moataz Amr
-
-Computer Vision Engineer
-
-Developed the Vision Detection Layer using MediaPipe/OpenCV to extract facial landmarks and ROIs.
-
--Abdelrahman Shawky
-
-Deep Learning Engineer
-
-Built, fine-tuned, and optimized the MobileNetV2 classification models, managing hyperparameter experiments.
-
--Mohamed Yahya
-
-Real-Time Systems Eng.
-
-Developed the CustomTkinter GUI, FastAPI backend, audio alert logic, and managed cloud deployment.
+```
+Open a web browser and navigate to `http://localhost:8000`.
+---
+## 👥 Team Members
+- **Nour Mohamed** - Team Lead & AI Architect
+- **Fatma Hesham** - Data & Dataset Engineer
+- **Moataz Amr** - Computer Vision Engineer
+- **Abdelrahman Shawky** - Deep Learning Engineer
+- **Mohamed Yahya** - Real-Time Systems Engineer
 
 DEPI (Digital Egypt Pioneers Initiative) - Final Project Submission
