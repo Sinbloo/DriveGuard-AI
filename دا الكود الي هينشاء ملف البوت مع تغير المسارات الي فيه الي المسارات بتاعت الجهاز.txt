@@ -1,0 +1,6 @@
+@echo off
+cd /d "D:\prgrames\program.py\programes\rwad\Gradwationpto\DEPI Project"
+
+"C:\Users\moham\AppData\Local\Programs\Python\Python310\python.exe" "ui2.py"
+
+pause
