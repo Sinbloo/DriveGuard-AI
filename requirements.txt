@@ -1,8 +1,0 @@
-fastapi
-uvicorn
-websockets
-jinja2
-python-multipart
-opencv-python-headless
-numpy
-mediapipe
