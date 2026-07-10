@@ -69,7 +69,7 @@ pip install -r requirements.txt
 ### 2. Audio Assets for AI Mitigation (Important ⚠️)
 The AI Mitigation system requires external audio files (e.g., wakefulness tracks, Quran) to trigger
 during emergencies.
-- Download the required audio assets from **[](https://drive.google.com/drive/folders/1QSAVcn-BSBvrmMoBSnGCsg_Tfz8j85KH?usp=sharing)]**.
+- Download the required audio assets from **[(https://drive.google.com/drive/folders/1QSAVcn-BSBvrmMoBSnGCsg_Tfz8j85KH?usp=sharing)]**.
 - Extract the downloaded files and place them inside the `assets/audio/` folder before running the
 application.
 ### 3. Running the Local Desktop App (Driver View)
