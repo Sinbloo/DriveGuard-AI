@@ -88,37 +88,31 @@ docker run -p 7860:7860 driveguard-ai
 
 👥 Meet The Team (DEPI Project)
 
-Name
-
-Role
-
-Key Responsibilities
-
-Nour Gomaa
+-Nour Gomaa
 
 Team Lead & AI Architect
 
 Designed system architecture, data strategy, reviewed models, managed GitHub, and executed final integration.
 
-Fatma Hesham
+-Fatma Hesham
 
 Data & Dataset Engineer
 
 Handled dataset organization, cleaning, class balancing, augmentation, and PyTorch DataLoader pipelines.
 
-Moataz Amr
+-Moataz Amr
 
 Computer Vision Engineer
 
 Developed the Vision Detection Layer using MediaPipe/OpenCV to extract facial landmarks and ROIs.
 
-Abdelrahman Shawky
+-Abdelrahman Shawky
 
 Deep Learning Engineer
 
 Built, fine-tuned, and optimized the MobileNetV2 classification models, managing hyperparameter experiments.
 
-Mohamed Yahya
+-Mohamed Yahya
 
 Real-Time Systems Eng.
 
