@@ -1,54 +1,26 @@
-# DriveGuard-AI
-🚗 DriveGuard AI: Intelligent Driver Safety & Monitoring System
-
-📌 Project Overview
-
-Driver fatigue and distraction are leading causes of severe road accidents globally. DriveGuard AI is an advanced, real-time hybrid monitoring system that utilizes Computer Vision and Deep Learning to track facial landmarks, Eye Aspect Ratio (EAR), and yawning frequency to detect micro-sleeps and cognitive distraction instantly.
-
-Unlike purely cloud-dependent systems, it processes video locally on edge devices for zero-latency alerts while simultaneously connecting to a live web dashboard for remote fleet monitoring.
-
-✨ Key Features
-
-👀 Real-Time Detection: Accurately identifies driver drowsiness (closed eyes) and fatigue (yawning) within milliseconds.
-
-⚡ Zero-Latency Alerts: Provides immediate in-cabin audio-visual warnings to the driver to prevent accidents.
-
-🧠 Hybrid Validation Pipeline: Minimizes false positives by combining MobileNetV2 Neural Network predictions with geometric calculations (EAR/MAR).
-
-🌐 Remote Fleet Management: Enables logistics managers to monitor vehicle safety states remotely via a WebSocket-powered web dashboard.
-
-🎯 Smart Auto-Tracking: Maintains facial focus dynamically based on exact distance estimation from the camera.
-
-🎵 AI Mitigation: Automatically launches custom audio content (e.g., energetic music, wakefulness frequencies) if the driver falls asleep for an extended period.
-
-🛠️ Tech Stack
-
-AI & Deep Learning: PyTorch, Torchvision, MobileNetV2
-
-Computer Vision: OpenCV, MediaPipe Face Mesh
-
-Backend & Streaming: FastAPI, Uvicorn, WebSockets
-
-Frontend / GUI: CustomTkinter (Desktop), HTML5 Canvas & Web Audio API (Web)
-
-Deployment: Docker, Hugging Face Spaces, Git LFS
-
-📁 Project Structure
-
-DriveGuard_Project/
-├── models/
-│   ├── eye_model_best.pth      # Pretrained weights for eye detection
-│   └── yawn_model_best.pth     # Pretrained weights for yawn detection
-├── templates/
-│   └── index.html              # Frontend HTML for web streaming
-├── core.py                     # Core AI logic, loading models, inference, EAR/MAR
-├── server.py                   # FastAPI backend & WebSocket handler
-├── ui2.py                      # Local desktop GUI (CustomTkinter)
-├── config.py                   # Global configuration thresholds
-├── Dockerfile                  # Cloud deployment configuration
-├── requirements.txt            # Python dependencies
-└── ui2.2.bat                   # Batch execution script for Windows
-
+# 🚗 DriveGuard AI: Intelligent Driver Safety & Monitoring System
+![Status](https://img.shields.io/badge/Status-Completed-success)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-orange)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)
+DriveGuard AI is an advanced, real-time hybrid monitoring system that utilizes Computer Vision and
+Deep Learning to track facial landmarks, Eye Aspect Ratio (EAR), and yawning frequency to detect
+micro-sleeps and cognitive distraction instantly. Unlike purely cloud-dependent systems, it processes
+video locally on edge devices for zero-latency alerts while simultaneously connecting to a live web
+dashboard for remote fleet monitoring.
+---
+## ✨ Key Features
+- **Real-Time Inference:** Zero-latency detection of drowsiness and fatigue using optimized
+MobileNetV2 models.
+- **Hybrid Validation Logic:** Combines Neural Network predictions with geometric calculations
+(EAR/MAR) to eliminate false positives.
+- **Smart Auto-Tracking:** Dynamically zooms and focuses on the driver's face based on physical
+distance estimation.
+- **AI Mitigation System:** Automatically intervenes during severe drowsiness by playing
+wakefulness audio/media.
+- **Dual-Interface System:** Features a Dark Mode Desktop App (Driver View) and a
+WebSocket-powered Web Dashboard (Fleet Manager View).
+---
 
 ## ️ Project Architecture
 1. **Computer Vision Layer:** MediaPipe Face Mesh & OpenCV.
